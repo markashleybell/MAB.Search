@@ -9,7 +9,7 @@ namespace MAB.Search.Spider.TestApp
     {
         static void Main(string[] args)
         {
-            var spider = new Spider();
+            ISpider spider = new Spider();
 
             spider.OnUrlRetrieved += OnUrlRetrieved;
 

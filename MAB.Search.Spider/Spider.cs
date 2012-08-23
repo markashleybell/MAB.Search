@@ -13,6 +13,7 @@ namespace MAB.Search.Spider
         private List<string> _hosts;
         private int _limit = 20;
         private Dictionary<string, Uri> _retrieved;
+        private Uri _baseUri;
 
         public event EventHandler<UrlRetrievedEventArgs> OnUrlRetrieved;
         
@@ -36,7 +37,8 @@ namespace MAB.Search.Spider
 
         public void Begin(string url)
         {
-            RetrieveAndProcessUrl(new Uri(url));
+            _baseUri = new Uri(url);
+            RetrieveAndProcessUrl(_baseUri);
         }
 
         private void RetrieveAndProcessUrl(Uri uri)
@@ -46,6 +48,8 @@ namespace MAB.Search.Spider
                 if(!_retrieved.ContainsKey(uri.ToString()))
                 {
                     var content = client.DownloadString(uri.ToString());
+
+                    // Process the content here
 
                     _retrieved.Add(uri.ToString(), uri);
 
