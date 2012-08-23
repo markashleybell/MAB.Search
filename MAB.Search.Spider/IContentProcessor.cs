@@ -5,8 +5,9 @@ using System.Text;
 
 namespace MAB.Search.Spider
 {
-    public interface IContentCleanser
+    public interface IContentProcessor
     {
-        List<string> GetWords(string content);
+        string Cleanse(string content);
+        List<string> Tokenise(string content);
     }
 }

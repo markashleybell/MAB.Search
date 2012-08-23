@@ -41,8 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ContentCleanser.cs" />
-    <Compile Include="IContentCleanser.cs" />
+    <Compile Include="ContentProcessor.cs" />
+    <Compile Include="IContentProcessor.cs" />
     <Compile Include="ISpider.cs" />
     <Compile Include="Spider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

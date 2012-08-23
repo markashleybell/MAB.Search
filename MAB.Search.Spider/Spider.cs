@@ -14,22 +14,22 @@ namespace MAB.Search.Spider
         private int _limit = 20;
         private Dictionary<string, Uri> _retrieved;
         private Uri _baseUri;
-        private IContentCleanser _contentCleanser;
+        private IContentProcessor _contentProcessor;
 
         public event EventHandler<UrlRetrievedEventArgs> OnUrlRetrieved;
 
-        public Spider(IContentCleanser contentCleanser)
+        public Spider(IContentProcessor contentProcessor)
         {
             _hosts = new List<string>();
             _retrieved = new Dictionary<string, Uri>();
-            _contentCleanser = contentCleanser;
+            _contentProcessor = contentProcessor;
         }
 
-        public Spider(IContentCleanser contentCleanser, List<string> hosts)
+        public Spider(IContentProcessor contentProcessor, List<string> hosts)
         {
             _hosts = hosts;
             _retrieved = new Dictionary<string, Uri>();
-            _contentCleanser = contentCleanser;
+            _contentProcessor = contentProcessor;
         }
 
         public List<string> Hosts
@@ -53,16 +53,20 @@ namespace MAB.Search.Spider
                     var content = client.DownloadString(uri.ToString());
 
                     // Process the content here
-                    var wordList = _contentCleanser.GetWords(content);
+                    var wordList = _contentProcessor.Tokenise(content);
 
                     _retrieved.Add(uri.ToString(), uri);
 
+                    var wordCounts = wordList.GroupBy(w => w)
+                                             .Select(x => new { Word = x.Key, Count = x.Count() })
+                                             .ToDictionary(x => x.Word, x => x.Count);
+
                     if(OnUrlRetrieved != null)
-                        OnUrlRetrieved(this, new UrlRetrievedEventArgs(uri.ToString()));
+                        OnUrlRetrieved(this, new UrlRetrievedEventArgs(uri.ToString(), wordCounts));
 
                     foreach(var url in MatchUrls(content, x => x.StartsWith("/") || x.StartsWith(uri.GetLeftPart(UriPartial.Authority))))
                     {
-                        Console.WriteLine(url);
+                        //Console.WriteLine(url);
                     }
                 }
             }
