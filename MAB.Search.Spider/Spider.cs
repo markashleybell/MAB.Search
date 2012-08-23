@@ -14,19 +14,22 @@ namespace MAB.Search.Spider
         private int _limit = 20;
         private Dictionary<string, Uri> _retrieved;
         private Uri _baseUri;
+        private IContentCleanser _contentCleanser;
 
         public event EventHandler<UrlRetrievedEventArgs> OnUrlRetrieved;
-        
-        public Spider()
+
+        public Spider(IContentCleanser contentCleanser)
         {
             _hosts = new List<string>();
             _retrieved = new Dictionary<string, Uri>();
+            _contentCleanser = contentCleanser;
         }
 
-        public Spider(List<string> hosts)
+        public Spider(IContentCleanser contentCleanser, List<string> hosts)
         {
             _hosts = hosts;
             _retrieved = new Dictionary<string, Uri>();
+            _contentCleanser = contentCleanser;
         }
 
         public List<string> Hosts
@@ -50,6 +53,7 @@ namespace MAB.Search.Spider
                     var content = client.DownloadString(uri.ToString());
 
                     // Process the content here
+                    var wordList = _contentCleanser.GetWords(content);
 
                     _retrieved.Add(uri.ToString(), uri);
 

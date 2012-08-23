@@ -9,7 +9,8 @@ namespace MAB.Search.Spider.TestApp
     {
         static void Main(string[] args)
         {
-            ISpider spider = new Spider();
+            IContentCleanser cleanser = new ContentCleanser();
+            ISpider spider = new Spider(cleanser);
 
             spider.OnUrlRetrieved += OnUrlRetrieved;
 
