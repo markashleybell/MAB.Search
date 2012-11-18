@@ -8,6 +8,6 @@ namespace MAB.Search.Spider
     public interface ISpider
     {
         event EventHandler<UrlRetrievedEventArgs> OnUrlRetrieved;
-        void Begin(string url);
+        void Begin();
     }
 }

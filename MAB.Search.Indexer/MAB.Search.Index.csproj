@@ -2,20 +2,18 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{36D42BB8-8884-4BE6-B5E4-3DAC2555021E}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{AECB7418-792F-49CF-966C-C9CD52270C7A}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MAB.Search.Spider.TestApp</RootNamespace>
-    <AssemblyName>MAB.Search.Spider.TestApp</AssemblyName>
+    <RootNamespace>MAB.Search.Index</RootNamespace>
+    <AssemblyName>MAB.Search.Index</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,8 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -43,18 +40,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="ContentProcessor.cs" />
+    <Compile Include="Document.cs" />
+    <Compile Include="IContentProcessor.cs" />
+    <Compile Include="ISearchIndex.cs" />
+    <Compile Include="SearchIndex.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MAB.Search.Indexer\MAB.Search.Index.csproj">
-      <Project>{AECB7418-792F-49CF-966C-C9CD52270C7A}</Project>
-      <Name>MAB.Search.Index</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MAB.Search.Spider\MAB.Search.Spider.csproj">
-      <Project>{65C4B00A-F38A-42D3-A469-30F9BBB647AF}</Project>
-      <Name>MAB.Search.Spider</Name>
-    </ProjectReference>
+    <Compile Include="Result.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

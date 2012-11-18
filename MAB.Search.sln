@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+# Visual Web Developer Express 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MAB.Search.Spider", "MAB.Search.Spider\MAB.Search.Spider.csproj", "{65C4B00A-F38A-42D3-A469-30F9BBB647AF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MAB.Search.Spider.TestApp", "MAB.Search.Spider.TestApp\MAB.Search.Spider.TestApp.csproj", "{36D42BB8-8884-4BE6-B5E4-3DAC2555021E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MAB.Search.Index", "MAB.Search.Indexer\MAB.Search.Index.csproj", "{AECB7418-792F-49CF-966C-C9CD52270C7A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,16 @@ Global
 		{36D42BB8-8884-4BE6-B5E4-3DAC2555021E}.Release|Mixed Platforms.Build.0 = Release|x86
 		{36D42BB8-8884-4BE6-B5E4-3DAC2555021E}.Release|x86.ActiveCfg = Release|x86
 		{36D42BB8-8884-4BE6-B5E4-3DAC2555021E}.Release|x86.Build.0 = Release|x86
+		{AECB7418-792F-49CF-966C-C9CD52270C7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AECB7418-792F-49CF-966C-C9CD52270C7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AECB7418-792F-49CF-966C-C9CD52270C7A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AECB7418-792F-49CF-966C-C9CD52270C7A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{AECB7418-792F-49CF-966C-C9CD52270C7A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AECB7418-792F-49CF-966C-C9CD52270C7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AECB7418-792F-49CF-966C-C9CD52270C7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AECB7418-792F-49CF-966C-C9CD52270C7A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{AECB7418-792F-49CF-966C-C9CD52270C7A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{AECB7418-792F-49CF-966C-C9CD52270C7A}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -41,12 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ContentProcessor.cs" />
-    <Compile Include="IContentProcessor.cs" />
     <Compile Include="ISpider.cs" />
     <Compile Include="Spider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UrlRetrievedEventArgs.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MAB.Search.Indexer\MAB.Search.Index.csproj">
+      <Project>{AECB7418-792F-49CF-966C-C9CD52270C7A}</Project>
+      <Name>MAB.Search.Index</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

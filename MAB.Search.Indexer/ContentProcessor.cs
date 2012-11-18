@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace MAB.Search.Spider
+namespace MAB.Search.Index
 {
     public class ContentProcessor : IContentProcessor
     {

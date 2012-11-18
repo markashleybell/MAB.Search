@@ -8,18 +8,17 @@ namespace MAB.Search.Spider
     public class UrlRetrievedEventArgs : EventArgs
     {
         private string _url;
-        private Dictionary<string, int> _wordCounts;
+        private int _urlsSpidered;
         
         public UrlRetrievedEventArgs(string url)
         {
             _url = url;
-            _wordCounts = null;
         }
 
-        public UrlRetrievedEventArgs(string url, Dictionary<string, int> wordCounts)
+        public UrlRetrievedEventArgs(string url, int urlsSpidered)
         {
             _url = url;
-            _wordCounts = wordCounts;
+            _urlsSpidered = urlsSpidered;
         }
 
         public string Url
@@ -28,10 +27,10 @@ namespace MAB.Search.Spider
             set { _url = value; }
         }
 
-        public Dictionary<string, int> WordCounts
+        public int UrlsSpidered
         {
-            get { return _wordCounts; }
-            set { _wordCounts = value; }
+            get { return _urlsSpidered; }
+            set { _urlsSpidered = value; }
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Linq.Expressions;
+using MAB.Search.Index;
 
 namespace MAB.Search.Spider
 {
@@ -12,24 +13,33 @@ namespace MAB.Search.Spider
     {
         private List<string> _hosts;
         private int _limit = 20;
+        private List<string> _urls;
         private Dictionary<string, Uri> _retrieved;
         private Uri _baseUri;
-        private IContentProcessor _contentProcessor;
+        private ISearchIndex _index;
 
         public event EventHandler<UrlRetrievedEventArgs> OnUrlRetrieved;
 
-        public Spider(IContentProcessor contentProcessor)
+        public Spider(ISearchIndex index, List<string> urls)
         {
             _hosts = new List<string>();
+            _urls = urls;
             _retrieved = new Dictionary<string, Uri>();
-            _contentProcessor = contentProcessor;
+            _index = index;
         }
 
-        public Spider(IContentProcessor contentProcessor, List<string> hosts)
+        public Spider(ISearchIndex index, List<string> urls, List<string> hosts)
         {
             _hosts = hosts;
+            _urls = urls;
             _retrieved = new Dictionary<string, Uri>();
-            _contentProcessor = contentProcessor;
+            _index = index;
+        }
+
+        public List<string> Urls
+        {
+            get { return _urls; }
+            set { _urls = value; }
         }
 
         public List<string> Hosts
@@ -38,10 +48,13 @@ namespace MAB.Search.Spider
             set { _hosts = value; }
         }
 
-        public void Begin(string url)
+        public void Begin()
         {
-            _baseUri = new Uri(url);
-            RetrieveAndProcessUrl(_baseUri);
+            foreach (string url in _urls)
+            {
+                _baseUri = new Uri(url);
+                RetrieveAndProcessUrl(_baseUri);
+            }
         }
 
         private void RetrieveAndProcessUrl(Uri uri)
@@ -52,17 +65,16 @@ namespace MAB.Search.Spider
                 {
                     var content = client.DownloadString(uri.ToString());
 
-                    // Process the content here
-                    var wordList = _contentProcessor.Tokenise(content);
+                    _index.AddDocument(new Document { 
+                        Title = "TEST",
+                        Url = uri.ToString(),
+                        Content = content
+                    });
 
                     _retrieved.Add(uri.ToString(), uri);
 
-                    var wordCounts = wordList.GroupBy(w => w)
-                                             .Select(x => new { Word = x.Key, Count = x.Count() })
-                                             .ToDictionary(x => x.Word, x => x.Count);
-
                     if(OnUrlRetrieved != null)
-                        OnUrlRetrieved(this, new UrlRetrievedEventArgs(uri.ToString(), wordCounts));
+                        OnUrlRetrieved(this, new UrlRetrievedEventArgs(uri.ToString(), _index.DocumentCount));
 
                     foreach(var url in MatchUrls(content, x => x.StartsWith("/") || x.StartsWith(uri.GetLeftPart(UriPartial.Authority))))
                     {
