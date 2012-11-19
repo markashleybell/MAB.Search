@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Reflection;
 
 namespace MAB.Search.Index
 {
@@ -11,6 +14,8 @@ namespace MAB.Search.Index
         List<Document> _documents;
         IContentProcessor _contentProcessor;
 
+        private string _appPath;
+
         public int DocumentCount { get; private set; }
 
         public SearchIndex(IContentProcessor contentProcessor)
@@ -19,7 +24,20 @@ namespace MAB.Search.Index
             _documents = new List<Document>();
             _contentProcessor = contentProcessor;
 
+            _appPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
             DocumentCount = 0;
+
+            if (File.Exists(_appPath + "\\index.bin"))
+            {
+                Stream stream = File.Open(_appPath + "\\index.bin", FileMode.Open);
+                BinaryFormatter bFormatter = new BinaryFormatter();
+                _index = (Dictionary<string, Dictionary<string, List<int>>>)bFormatter.Deserialize(stream);
+                stream.Close();
+
+                // Need a wrapper for the index dictionary to store meta data (e.g document count) which 
+                // is not trivial to work out from the index itself when loaded
+            }
         }
 
         public void AddDocument(Document document)
@@ -64,6 +82,12 @@ namespace MAB.Search.Index
                     _index[word][doc.Url].Add(i);
                 }
             }
+
+            // Serialize the index to a binary file
+            Stream stream = File.Open(_appPath + "\\index.bin", FileMode.Create);
+            BinaryFormatter bFormatter = new BinaryFormatter();
+            bFormatter.Serialize(stream, _index);
+            stream.Close();
         }
 
         public List<Result> Query(string query)

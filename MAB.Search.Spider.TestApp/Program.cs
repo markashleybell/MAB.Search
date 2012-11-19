@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MAB.Search.Index;
+using System.IO;
+using System.Reflection;
 
 namespace MAB.Search.Spider.TestApp
 {
@@ -16,19 +18,24 @@ namespace MAB.Search.Spider.TestApp
 
             ISearchIndex index = new SearchIndex(contentProcessor);
 
-            var urls = new List<string> { 
-                "http://en.wikipedia.org/wiki/Battle_of_Bosworth_Field",
-                "http://en.wikipedia.org/wiki/Plymouth",
-                "http://en.wikipedia.org/wiki/Tamar_Bridge"
-            };
+            var indexFile = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\index.bin";
 
-            ISpider spider = new Spider(index, urls);
-            
-            spider.OnUrlRetrieved += OnUrlRetrieved;
+            if (!File.Exists(indexFile))
+            {
+                var urls = new List<string> { 
+                    "http://en.wikipedia.org/wiki/Battle_of_Bosworth_Field",
+                    "http://en.wikipedia.org/wiki/Plymouth",
+                    "http://en.wikipedia.org/wiki/Tamar_Bridge"
+                };
 
-            spider.Begin();
+                ISpider spider = new Spider(index, urls);
 
-            index.Update();
+                spider.OnUrlRetrieved += OnUrlRetrieved;
+
+                spider.Begin();
+
+                index.Update();
+            }
 
             while (true) 
             {
