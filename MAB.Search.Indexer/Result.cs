@@ -9,6 +9,6 @@ namespace MAB.Search.Index
     {
         public string Title { get; set; }
         public string Url { get; set; }
-        public int Relevance { get; set; }
+        public decimal Relevance { get; set; }
     }
 }

@@ -25,7 +25,8 @@ namespace MAB.Search.Spider.TestApp
                 var urls = new List<string> { 
                     "http://en.wikipedia.org/wiki/Battle_of_Bosworth_Field",
                     "http://en.wikipedia.org/wiki/Plymouth",
-                    "http://en.wikipedia.org/wiki/Tamar_Bridge"
+                    "http://en.wikipedia.org/wiki/Tamar_Bridge",
+                    "http://en.wikipedia.org/wiki/Saltash"
                 };
 
                 ISpider spider = new Spider(index, urls);

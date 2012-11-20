@@ -96,7 +96,7 @@ namespace MAB.Search.Index
             // Tidy up the query as much as possible
             var terms = Regex.Replace(query.Trim(), @" {2,}", " ").ToLower().Split(' ').ToList();
 
-            var results = new Dictionary<string, int>();
+            var results = new Dictionary<string, decimal>();
 
             var postings = new Dictionary<string, Dictionary<string, List<int>>>();
 
@@ -120,71 +120,78 @@ namespace MAB.Search.Index
                 }
             }
 
-            // Just get the documents (keys) from the postings list 
-            // So docs will be a list of lists containing all the 
-            // documents each term is found in
-            var docs = (from term in postings
-                        select term.Value.Keys).ToList();
-
-            // Initialise the list with the list of docs which match the 
-            // first term so we can produce an intersection with it on 
-            // the first iteration of the loop
-            var docsWhichContainAllTerms = new List<string>();
-            docsWhichContainAllTerms.AddRange(docs.First());
-
-            // Loop through the lists which match the remaining terms
-            // Skip the first list
-            foreach (var doc in docs.Skip(1))
+            // If it was a single search term, we don't need to bother
+            // checking for multiple and positional matches
+            if (terms.Count > 1)
             {
-                // Get the intersection of the docs which contain this term 
-                // with the docs which match all the previous terms
-                docsWhichContainAllTerms = docsWhichContainAllTerms.Intersect(doc).ToList();
-            }
+                // Just get the documents (keys) from the postings list 
+                // So docs will be a list of lists containing all the 
+                // documents each term is found in
+                var docs = (from term in postings
+                            select term.Value.Keys).ToList();
 
-            foreach (var doc in docsWhichContainAllTerms)
-            {
-                // Add weight to each document which contains 
-                // ALL of the search terms
-                if (!results.ContainsKey(doc))
-                    results.Add(doc, 0);
+                // Initialise the list with the list of docs which match the 
+                // first term so we can produce an intersection with it on 
+                // the first iteration of the loop
+                var docsWhichContainAllTerms = new List<string>();
+                docsWhichContainAllTerms.AddRange(docs.First());
 
-                results[doc] += 2;
-            }
-
-            var docsWhichMatch = new List<string>();
-
-            // Loop through each document which contains all the terms
-            foreach (var doc in docsWhichContainAllTerms)
-            {
-                // Get a list of the term positions for this document
-                var termPositions = (from p in postings
-                                     select p.Value[doc]).ToList();
-
-                var intersection = new List<int>();
-                intersection.AddRange(termPositions.First());
-
-                for (var i = 1; i < termPositions.Count; i++)
+                // Loop through the lists which match the remaining terms
+                // Skip the first list
+                foreach (var doc in docs.Skip(1))
                 {
-                    var subtracted = termPositions[i].Select(x => (x - i)).ToList();
-
-                    intersection = intersection.Intersect(subtracted).ToList();
+                    // Get the intersection of the docs which contain this term 
+                    // with the docs which match all the previous terms
+                    docsWhichContainAllTerms = docsWhichContainAllTerms.Intersect(doc).ToList();
                 }
 
-                if (intersection.Count > 0)
-                    docsWhichMatch.Add(doc);
+                foreach (var doc in docsWhichContainAllTerms)
+                {
+                    // Add weight to each document which contains 
+                    // ALL of the search terms
+                    if (!results.ContainsKey(doc))
+                        results.Add(doc, 0);
+
+                    results[doc] += 1;
+                }
+
+                var docsWhichMatch = new List<string>();
+
+                // Loop through each document which contains all the terms
+                foreach (var doc in docsWhichContainAllTerms)
+                {
+                    // Get a list of the term positions for this document
+                    var termPositions = (from p in postings
+                                         select p.Value[doc]).ToList();
+
+                    var intersection = new List<int>();
+                    intersection.AddRange(termPositions.First());
+
+                    for (var i = 1; i < termPositions.Count; i++)
+                    {
+                        var subtracted = termPositions[i].Select(x => (x - i)).ToList();
+
+                        intersection = intersection.Intersect(subtracted).ToList();
+                    }
+
+                    if (intersection.Count > 0)
+                        docsWhichMatch.Add(doc);
+                }
+
+                foreach (var doc in docsWhichMatch)
+                {
+                    // Add 'weight' to each document which contains 
+                    // the exact phrase searched for
+                    if (!results.ContainsKey(doc))
+                        results.Add(doc, 0);
+
+                    results[doc] += 100;
+                }
             }
 
-            foreach (var doc in docsWhichMatch)
-            {
-                // Add 'weight' to each document which contains 
-                // the exact phrase searched for
-                if (!results.ContainsKey(doc))
-                    results.Add(doc, 0);
-
-                results[doc] += 10;
-            }
-
-            return results.Select(x => new Result { Url = x.Key, Relevance = x.Value }).OrderByDescending(x => x.Relevance).ToList();
+            return results.Select(x => new Result { Url = x.Key, Relevance = x.Value })
+                          .OrderByDescending(x => x.Relevance)
+                          .ToList();
         }
     }
 }
