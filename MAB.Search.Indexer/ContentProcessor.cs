@@ -49,7 +49,12 @@ namespace MAB.Search.Index
 
         public List<string> Tokenise(string content)
         {
-            return Cleanse(content).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            return Cleanse(content).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                                   // We only cater for English at the moment so it's unlikely anyone is going to search for a 26-letter word
+                                   .Where(s => s.Length < 26) 
+                                   // Lowercase everything at this point
+                                   .Select(s => s.ToLower())
+                                   .ToList();
         }
     }
 }

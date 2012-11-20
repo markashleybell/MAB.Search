@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace MAB.Search.Index
 {
@@ -92,8 +93,8 @@ namespace MAB.Search.Index
 
         public List<Result> Query(string query)
         {
-            // TODO: we need to deal with multiple spaces, case sensitivity etc
-            var terms = query.Split(' ').ToList();
+            // Tidy up the query as much as possible
+            var terms = Regex.Replace(query.Trim(), @" {2,}", " ").ToLower().Split(' ').ToList();
 
             var results = new Dictionary<string, int>();
 
