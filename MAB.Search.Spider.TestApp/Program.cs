@@ -26,7 +26,13 @@ namespace MAB.Search.Spider.TestApp
                     "http://en.wikipedia.org/wiki/Battle_of_Bosworth_Field",
                     "http://en.wikipedia.org/wiki/Plymouth",
                     "http://en.wikipedia.org/wiki/Tamar_Bridge",
-                    "http://en.wikipedia.org/wiki/Saltash"
+                    "http://en.wikipedia.org/wiki/Saltash", 
+                    "http://en.wikipedia.org/wiki/Plymouth,_Massachusetts",
+                    "http://en.wikipedia.org/wiki/Pilgrim_Fathers",
+                    "http://en.wikipedia.org/wiki/Francis_Drake", 
+                    "http://en.wikipedia.org/wiki/HMNB_Devonport", 
+                    "http://en.wikipedia.org/wiki/River_Tamar", 
+                    "http://en.wikipedia.org/wiki/Royal_Albert_Bridge"
                 };
 
                 ISpider spider = new Spider(index, urls);
@@ -34,8 +40,6 @@ namespace MAB.Search.Spider.TestApp
                 spider.OnUrlRetrieved += OnUrlRetrieved;
 
                 spider.Begin();
-
-                index.Update();
             }
 
             while (true) 

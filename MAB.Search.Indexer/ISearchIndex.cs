@@ -9,7 +9,6 @@ namespace MAB.Search.Index
     {
         void AddDocument(Document document);
         void AddDocuments(List<Document> documents);
-        void Update();
         int DocumentCount { get; }
         List<Result> Query(string query);
     }
