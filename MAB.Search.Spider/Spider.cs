@@ -63,22 +63,34 @@ namespace MAB.Search.Spider
             {
                 if(!_retrieved.ContainsKey(uri.ToString()))
                 {
-                    var content = client.DownloadString(uri.ToString());
+                    string content = null;
 
-                    _index.AddDocument(new Document { 
-                        Title = "TEST",
-                        Url = uri.ToString(),
-                        Content = content
-                    });
-
-                    _retrieved.Add(uri.ToString(), uri);
-
-                    if(OnUrlRetrieved != null)
-                        OnUrlRetrieved(this, new UrlRetrievedEventArgs(uri.ToString(), _index.DocumentCount));
-
-                    foreach(var url in MatchUrls(content, x => x.StartsWith("/") || x.StartsWith(uri.GetLeftPart(UriPartial.Authority))))
+                    try
                     {
-                        //Console.WriteLine(url);
+                        content = client.DownloadString(uri.ToString());
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine("Error retrieving URL");
+                    }
+
+                    if(!string.IsNullOrWhiteSpace(content))
+                    {
+                        _index.AddDocument(new Document { 
+                            Title = "TEST",
+                            Url = uri.ToString(),
+                            Content = content
+                        });
+
+                        _retrieved.Add(uri.ToString(), uri);
+
+                        if(OnUrlRetrieved != null)
+                            OnUrlRetrieved(this, new UrlRetrievedEventArgs(uri.ToString(), _index.DocumentCount));
+
+                        foreach(var url in MatchUrls(content, x => x.StartsWith("/") || x.StartsWith(uri.GetLeftPart(UriPartial.Authority))))
+                        {
+                            //Console.WriteLine(url);
+                        }
                     }
                 }
             }
