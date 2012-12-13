@@ -13,20 +13,14 @@ namespace MAB.Search.Index
     public class SearchIndex : ISearchIndex
     {
         IContentProcessor _contentProcessor;
-
         private string _appPath;
-
-        private bool _serialize;
 
         public int DocumentCount { get; private set; }
 
         public SearchIndex(IContentProcessor contentProcessor)
         {
             _contentProcessor = contentProcessor;
-
             _appPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-            _serialize = true;
 
             DocumentCount = 0;
         }
@@ -38,44 +32,27 @@ namespace MAB.Search.Index
 
             var index = new Dictionary<string, Dictionary<string, List<int>>>();
 
-            if (_serialize)
+            if (File.Exists(_appPath + "\\index.bin"))
             {
-                if (File.Exists(_appPath + "\\index.bin"))
-                {
-                    using (var stream = File.Open(_appPath + "\\index.bin", FileMode.Open))
-                    {
-                        BinaryFormatter bFormatter = new BinaryFormatter();
-                        index = (Dictionary<string, Dictionary<string, List<int>>>)bFormatter.Deserialize(stream);
-                    }
+                var indexRaw = File.ReadAllText(_appPath + "\\index.bin");
 
-                    // Need a wrapper for the index dictionary to store meta data (e.g document count) which 
-                    // is not trivial to work out from the index itself when loaded
-                }
-            }
-            else
-            {
-                if (File.Exists(_appPath + "\\index.bin"))
-                {
-                    var indexRaw = File.ReadAllText(_appPath + "\\index.bin");
-
-                    index = (from word in indexRaw.Split('~') // Split the whole thing on tilde chars, this gives us an element for each word
-                             let documents = word.Split('^') // Split the current word element on ^, this gives us an array where the first
-                             select new {
-                                 k = documents[0],
-                                 v = (from posting in documents.Skip(1)
-                                      let p = posting.Split(' ')
-                                      select new {
-                                          k1 = p[0],
-                                          v1 = p[1].Split('|').Select(x => Convert.ToInt32(x)).ToList()
-                                      }).ToDictionary(x => x.k1, x => x.v1)	
-                            }).ToDictionary(x => x.k, x => x.v);
-                }
+                index = (from word in indexRaw.Split('~') // Split the whole thing on tilde chars, this gives us an element for each word
+                            let documents = word.Split('^') // Split the current word element on ^, this gives us an array where the first
+                            select new {
+                                k = documents[0],
+                                v = (from posting in documents.Skip(1)
+                                    let p = posting.Split(' ')
+                                    select new {
+                                        k1 = p[0],
+                                        v1 = p[1].Split('|').Select(x => Convert.ToInt32(x)).ToList()
+                                    }).ToDictionary(x => x.k1, x => x.v1)	
+                        }).ToDictionary(x => x.k, x => x.v);
             }
 
             stopWatch.Stop();
             TimeSpan ts = stopWatch.Elapsed;
 
-            File.AppendAllText(_appPath + "\\timings.log", "Load Index (" + ((_serialize) ? "Serialize" : "String") + "): " + ts.ToString() + Environment.NewLine);
+            File.AppendAllText(_appPath + "\\timings.log", "Load Index: " + ts.ToString() + Environment.NewLine);
 
             return index;
         }
@@ -85,47 +62,21 @@ namespace MAB.Search.Index
             var stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            if (_serialize)
-            {
-                // Serialize the index to a binary file
-                using (var stream = File.Open(_appPath + "\\index.bin", FileMode.Create))
-                {
-                    BinaryFormatter bFormatter = new BinaryFormatter();
-                    bFormatter.Serialize(stream, index);
-                }
-            }
-            else
-            {
-                var output = string.Join("~", (from word in index
-                                               select word.Key + "^" + 
-                                                    string.Join("^", (from document in word.Value
-                                                                      select document.Key + " " +
-                                                                            string.Join("|", (from posting in document.Value
-                                                                                              select posting).ToArray()) 
-                                                                      ).ToArray())
-                                               ).ToArray());
+            var output = string.Join("~", (from word in index
+                                            select word.Key + "^" + 
+                                                string.Join("^", (from document in word.Value
+                                                                    select document.Key + " " +
+                                                                        string.Join("|", (from posting in document.Value
+                                                                                            select posting).ToArray()) 
+                                                                    ).ToArray())
+                                            ).ToArray());
 
-                // var output = new StringBuilder();
-
-                //foreach(var document in index)
-                //{
-                //    output.Append(document.Key + "[");
-
-                //    foreach(var word in document.Value)
-                //    {
-                //        output.Append(word.Key + "{" + string.Join("|", word.Value.ToArray()) + "}");
-                //    }
-
-                //    output.Append("]");
-                //}
-
-                File.WriteAllText(_appPath + "\\index.bin", output.ToString());
-            }
+            File.WriteAllText(_appPath + "\\index.bin", output.ToString());
 
             stopWatch.Stop();
             TimeSpan ts = stopWatch.Elapsed;
 
-            File.AppendAllText(_appPath + "\\timings.log", "Save Index (" + ((_serialize) ? "Serialize" : "String") + "): " + ts.ToString() + Environment.NewLine);
+            File.AppendAllText(_appPath + "\\timings.log", "Save Index: " + ts.ToString() + Environment.NewLine);
         }
 
         public void AddDocument(Document document)
