@@ -26,7 +26,7 @@ namespace MAB.Search.Index
 
             _appPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            _serialize = false;
+            _serialize = true;
 
             DocumentCount = 0;
         }
@@ -119,7 +119,7 @@ namespace MAB.Search.Index
                 //    output.Append("]");
                 //}
 
-                //File.WriteAllText(_appPath + "\\index.bin", output.ToString());
+                File.WriteAllText(_appPath + "\\index.bin", output.ToString());
             }
 
             stopWatch.Stop();
