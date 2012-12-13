@@ -15,6 +15,11 @@ namespace MAB.Search.Index
         IContentProcessor _contentProcessor;
         private string _appPath;
 
+        private const char FILE_SEPARATOR = ((char)28); 
+        private const char GROUP_SEPARATOR = ((char)29); 
+        private const char RECORD_SEPARATOR = ((char)30); 
+        private const char UNIT_SEPARATOR = ((char)31);
+
         public int DocumentCount { get; private set; }
 
         public SearchIndex(IContentProcessor contentProcessor)
@@ -36,17 +41,17 @@ namespace MAB.Search.Index
             {
                 var indexRaw = File.ReadAllText(_appPath + "\\index.bin");
 
-                index = (from word in indexRaw.Split('~') // Split the whole thing on tilde chars, this gives us an element for each word
-                            let documents = word.Split('^') // Split the current word element on ^, this gives us an array where the first
-                            select new {
-                                k = documents[0],
-                                v = (from posting in documents.Skip(1)
-                                    let p = posting.Split(' ')
-                                    select new {
-                                        k1 = p[0],
-                                        v1 = p[1].Split('|').Select(x => Convert.ToInt32(x)).ToList()
-                                    }).ToDictionary(x => x.k1, x => x.v1)	
-                        }).ToDictionary(x => x.k, x => x.v);
+                index = (from word in indexRaw.Split(GROUP_SEPARATOR) // Returns array with element for each word
+                         let documents = word.Split(RECORD_SEPARATOR) // Returns array where element 0 is the word and the others are url/postings structures
+                         select new {
+                             k = documents[0], // Key is the word
+                             v = (from posting in documents.Skip(1) // Skip the first element (which was the word)
+                                  let p = posting.Split(' ') // Returns array where 0 is document URL and 1 is pipe-separated postings list
+                                  select new {
+                                      k1 = p[0], // Key is the document URL
+                                      v1 = p[1].Split('|').Select(x => Convert.ToInt32(x)).ToList() // Split the postings into a List<int>
+                                  }).ToDictionary(x => x.k1, x => x.v1)	// Return a Dictionary<string, List<int>>
+                         }).ToDictionary(x => x.k, x => x.v); // Dictionary<string, Dictionary<string, List<int>>>
             }
 
             stopWatch.Stop();
@@ -62,14 +67,21 @@ namespace MAB.Search.Index
             var stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            var output = string.Join("~", (from word in index
-                                            select word.Key + "^" + 
-                                                string.Join("^", (from document in word.Value
-                                                                    select document.Key + " " +
-                                                                        string.Join("|", (from posting in document.Value
-                                                                                            select posting).ToArray()) 
-                                                                    ).ToArray())
-                                            ).ToArray());
+            // Convert these to strings for use with string.Join
+            var gs = GROUP_SEPARATOR.ToString();
+            var rs = RECORD_SEPARATOR.ToString();
+
+            // Forgive me, this was tricky to indent readably...
+            var output = string.Join(gs, (from word in index // For each word in the index
+                                          select word.Key + rs + // Concatenate the word with a record separator char then the list of url/posting structures
+                                          string.Join(rs, (from document in word.Value // For each url/posting structure in this word's value
+                                                           select document.Key + " " + // Concatenate the document URL with a space, then a pipe-separated list of postings
+                                                           string.Join("|", (from posting in document.Value select posting).ToArray()) // Join the postings for this doc with a pipe
+                                                           ).ToArray())
+                                          ).ToArray());
+
+            // Index Format:
+            // ship{RECORD_SEPARATOR}http://en.wikipedia.org/wiki/Saltash 480|494|670{RECORD_SEPARATOR}http://en.wikipedia.org/wiki/Plymouth,_Massachusetts 127|444|458|479|2510{GROUP_SEPARATOR}...
 
             File.WriteAllText(_appPath + "\\index.bin", output.ToString());
 
