@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MAB.Search.Spider")]
+[assembly: AssemblyTitle("MAB.Search.TestApp")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("MAB.Search.Spider")]
+[assembly: AssemblyProduct("MAB.Search.TestApp")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("febcef38-8535-4b4a-93dc-d98590d9d3cb")]
+[assembly: Guid("55bb8439-3aeb-4d9f-b493-e315f09b8efe")]
 
 // Version information for an assembly consists of the following four values:
 //

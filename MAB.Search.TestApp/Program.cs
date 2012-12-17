@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MAB.Search.Index;
 using System.IO;
 using System.Reflection;
+using MAB.Search.Indexing;
+using MAB.Search.Retrieval;
 
-namespace MAB.Search.Spider.TestApp
+namespace MAB.Search.TestApp
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
@@ -35,11 +36,11 @@ namespace MAB.Search.Spider.TestApp
                     "http://en.wikipedia.org/wiki/Royal_Albert_Bridge"
                 };
 
-                ISpider spider = new Spider(index, urls);
+                ICrawler crawler = new Crawler(index, urls);
 
-                spider.OnUrlRetrieved += OnUrlRetrieved;
+                crawler.OnUrlRetrieved += OnUrlRetrieved;
 
-                spider.Begin();
+                crawler.Begin();
             }
 
             while (true) 

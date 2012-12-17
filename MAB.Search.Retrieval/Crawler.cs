@@ -5,11 +5,11 @@ using System.Text;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Linq.Expressions;
-using MAB.Search.Index;
+using MAB.Search.Indexing;
 
-namespace MAB.Search.Spider
+namespace MAB.Search.Retrieval
 {
-    public class Spider : ISpider
+    public class Crawler : ICrawler
     {
         private List<string> _hosts;
         private int _limit = 20;
@@ -20,7 +20,7 @@ namespace MAB.Search.Spider
 
         public event EventHandler<UrlRetrievedEventArgs> OnUrlRetrieved;
 
-        public Spider(ISearchIndex index, List<string> urls)
+        public Crawler(ISearchIndex index, List<string> urls)
         {
             _hosts = new List<string>();
             _urls = urls;
@@ -28,7 +28,7 @@ namespace MAB.Search.Spider
             _index = index;
         }
 
-        public Spider(ISearchIndex index, List<string> urls, List<string> hosts)
+        public Crawler(ISearchIndex index, List<string> urls, List<string> hosts)
         {
             _hosts = hosts;
             _urls = urls;

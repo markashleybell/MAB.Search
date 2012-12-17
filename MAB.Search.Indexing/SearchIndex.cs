@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 
-namespace MAB.Search.Index
+namespace MAB.Search.Indexing
 {
     public class SearchIndex : ISearchIndex
     {

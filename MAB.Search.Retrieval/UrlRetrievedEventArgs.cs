@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MAB.Search.Spider
+namespace MAB.Search.Retrieval
 {
     public class UrlRetrievedEventArgs : EventArgs
     {

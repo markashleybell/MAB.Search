@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{36D42BB8-8884-4BE6-B5E4-3DAC2555021E}</ProjectGuid>
+    <ProjectGuid>{F8BC7756-DCFD-4D47-AE51-6CECF3E9E817}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MAB.Search.Spider.TestApp</RootNamespace>
-    <AssemblyName>MAB.Search.Spider.TestApp</AssemblyName>
+    <RootNamespace>MAB.Search.TestApp</RootNamespace>
+    <AssemblyName>MAB.Search.TestApp</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -47,13 +47,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MAB.Search.Indexer\MAB.Search.Index.csproj">
-      <Project>{AECB7418-792F-49CF-966C-C9CD52270C7A}</Project>
-      <Name>MAB.Search.Index</Name>
+    <ProjectReference Include="..\MAB.Search.Indexing\MAB.Search.Indexing.csproj">
+      <Project>{DC9C162E-9133-43A4-8516-5E7979A44D1A}</Project>
+      <Name>MAB.Search.Indexing</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MAB.Search.Spider\MAB.Search.Spider.csproj">
-      <Project>{65C4B00A-F38A-42D3-A469-30F9BBB647AF}</Project>
-      <Name>MAB.Search.Spider</Name>
+    <ProjectReference Include="..\MAB.Search.Retrieval\MAB.Search.Retrieval.csproj">
+      <Project>{FF418AB4-55DE-46B2-AC16-984E93C07674}</Project>
+      <Name>MAB.Search.Retrieval</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
