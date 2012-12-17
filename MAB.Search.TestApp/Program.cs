@@ -23,20 +23,22 @@ namespace MAB.Search.TestApp
 
             if (!File.Exists(indexFile))
             {
-                var urls = new List<string> { 
-                    "http://en.wikipedia.org/wiki/Battle_of_Bosworth_Field",
-                    "http://en.wikipedia.org/wiki/Plymouth",
-                    "http://en.wikipedia.org/wiki/Tamar_Bridge",
-                    "http://en.wikipedia.org/wiki/Saltash", 
-                    "http://en.wikipedia.org/wiki/Plymouth,_Massachusetts",
-                    "http://en.wikipedia.org/wiki/Pilgrim_Fathers",
-                    "http://en.wikipedia.org/wiki/Francis_Drake", 
-                    "http://en.wikipedia.org/wiki/HMNB_Devonport", 
-                    "http://en.wikipedia.org/wiki/River_Tamar", 
-                    "http://en.wikipedia.org/wiki/Royal_Albert_Bridge"
+                var segments = new List<Uri> { 
+                    new Uri("http://en.wikipedia.org/wiki/Battle_of_Bosworth_Field"),
+                    new Uri("http://en.wikipedia.org/wiki/Plymouth"),
+                    new Uri("http://en.wikipedia.org/wiki/Tamar_Bridge"),
+                    new Uri("http://en.wikipedia.org/wiki/Saltash"), 
+                    new Uri("http://en.wikipedia.org/wiki/Plymouth,_Massachusetts"),
+                    new Uri("http://en.wikipedia.org/wiki/Pilgrim_Fathers"),
+                    new Uri("http://en.wikipedia.org/wiki/Francis_Drake"), 
+                    new Uri("http://en.wikipedia.org/wiki/HMNB_Devonport"), 
+                    new Uri("http://en.wikipedia.org/wiki/River_Tamar"), 
+                    new Uri("http://en.wikipedia.org/wiki/Royal_Albert_Bridge")
                 };
 
-                ICrawler crawler = new Crawler(index, urls);
+                ICrawler crawler = new Crawler(index);
+
+                segments.ForEach(x => crawler.CrawlQueue.Enqueue(x));
 
                 crawler.OnUrlRetrieved += OnUrlRetrieved;
 

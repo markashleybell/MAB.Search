@@ -13,33 +13,30 @@ namespace MAB.Search.Retrieval
     {
         private List<string> _hosts;
         private int _limit = 20;
-        private List<string> _urls;
-        private Dictionary<string, Uri> _retrieved;
+        private Queue<Uri> _crawlQueue;
         private Uri _baseUri;
         private ISearchIndex _index;
 
         public event EventHandler<UrlRetrievedEventArgs> OnUrlRetrieved;
 
-        public Crawler(ISearchIndex index, List<string> urls)
+        public Crawler(ISearchIndex index)
         {
             _hosts = new List<string>();
-            _urls = urls;
-            _retrieved = new Dictionary<string, Uri>();
+            _crawlQueue = new Queue<Uri>();
             _index = index;
         }
 
-        public Crawler(ISearchIndex index, List<string> urls, List<string> hosts)
+        public Crawler(ISearchIndex index, List<string> hosts)
         {
             _hosts = hosts;
-            _urls = urls;
-            _retrieved = new Dictionary<string, Uri>();
+            _crawlQueue = new Queue<Uri>();
             _index = index;
         }
 
-        public List<string> Urls
+        public Queue<Uri> CrawlQueue
         {
-            get { return _urls; }
-            set { _urls = value; }
+            get { return _crawlQueue; }
+            set { _crawlQueue = value; }
         }
 
         public List<string> Hosts
@@ -50,20 +47,18 @@ namespace MAB.Search.Retrieval
 
         public void Begin()
         {
-            foreach (string url in _urls)
-            {
-                _baseUri = new Uri(url);
-                RetrieveAndProcessUrl(_baseUri);
-            }
+            ProcessCrawlQueue();
         }
 
-        private void RetrieveAndProcessUrl(Uri uri)
+        private void ProcessCrawlQueue()
         {
             using(var client = new WebClient())
             {
-                if(!_retrieved.ContainsKey(uri.ToString()))
+                string content = null;
+
+                if(_crawlQueue.Count > 0)
                 {
-                    string content = null;
+                    var uri = _crawlQueue.Dequeue();
 
                     try
                     {
@@ -82,8 +77,6 @@ namespace MAB.Search.Retrieval
                             Content = content
                         });
 
-                        _retrieved.Add(uri.ToString(), uri);
-
                         if(OnUrlRetrieved != null)
                             OnUrlRetrieved(this, new UrlRetrievedEventArgs(uri.ToString(), _index.DocumentCount));
 
@@ -92,6 +85,8 @@ namespace MAB.Search.Retrieval
                             //Console.WriteLine(url);
                         }
                     }
+
+                    ProcessCrawlQueue();
                 }
             }
         }

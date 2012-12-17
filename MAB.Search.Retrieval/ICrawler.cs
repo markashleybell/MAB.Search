@@ -9,5 +9,6 @@ namespace MAB.Search.Retrieval
     {
         event EventHandler<UrlRetrievedEventArgs> OnUrlRetrieved;
         void Begin();
+        Queue<Uri> CrawlQueue { get; set; }
     }
 }
