@@ -33,7 +33,18 @@ namespace MAB.Search.TestApp
                     new Uri("http://en.wikipedia.org/wiki/Francis_Drake"), 
                     new Uri("http://en.wikipedia.org/wiki/HMNB_Devonport"), 
                     new Uri("http://en.wikipedia.org/wiki/River_Tamar"), 
-                    new Uri("http://en.wikipedia.org/wiki/Royal_Albert_Bridge")
+                    new Uri("http://en.wikipedia.org/wiki/Royal_Albert_Bridge"),
+                    new Uri("http://en.wikipedia.org/wiki/Devonport,_Devon"),
+                    new Uri("http://en.wikipedia.org/wiki/Royal_Albert_Bridge"),
+                    new Uri("http://en.wikipedia.org/wiki/English_Civil_War"),
+                    new Uri("http://en.wikipedia.org/wiki/River_Plym"),
+                    new Uri("http://en.wikipedia.org/wiki/Plympton"),
+                    new Uri("http://en.wikipedia.org/wiki/Royal_Albert_Bridge"),
+                    new Uri("http://en.wikipedia.org/wiki/Plymouth_Colony"),
+                    new Uri("http://en.wikipedia.org/wiki/Union_Street,_Plymouth"),
+                    new Uri("http://en.wikipedia.org/wiki/Plymstock"),
+                    new Uri("http://en.wikipedia.org/wiki/Dartmoor"),
+                    new Uri("http://en.wikipedia.org/wiki/University_of_Plymouth")                    
                 };
 
                 ICrawler crawler = new Crawler(index);
