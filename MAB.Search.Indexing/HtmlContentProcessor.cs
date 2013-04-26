@@ -6,23 +6,31 @@ using System.Text.RegularExpressions;
 
 namespace MAB.Search.Indexing
 {
-    public class ContentProcessor : IContentProcessor
+    /// <summary>
+    /// 
+    /// </summary>
+    public class HtmlContentProcessor : IContentProcessor
     {
         private List<string> _stopWords;
         private Regex _stopWordsRegex;
 
-        public ContentProcessor()
+        public HtmlContentProcessor()
         {
             // Leave member variables null
         }
 
-        public ContentProcessor(List<string> stopWords)
+        public HtmlContentProcessor(List<string> stopWords)
         {
             _stopWords = stopWords;
             // We have a list of separate stop words, so compile them all into a regular expression for later use
             _stopWordsRegex = new Regex("\\b(" + string.Join("|", _stopWords) + ")\\b", RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.Multiline);
         }
 
+        /// <summary>
+        /// Strip non-text content from an HTML formatted string
+        /// </summary>
+        /// <param name="content">HTML string</param>
+        /// <returns>Plain text content</returns>
         public string Cleanse(string content)
         {
             var opts = RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.Multiline;
@@ -50,7 +58,7 @@ namespace MAB.Search.Indexing
         public List<string> Tokenise(string content)
         {
             return Cleanse(content).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                                   // We only cater for English at the moment so it's unlikely anyone is going to search for a 26-letter word
+                                   // We only cater for English at the moment, so it's unlikely anyone is going to search for a 26-letter word
                                    .Where(s => s.Length < 26) 
                                    // Lowercase everything at this point
                                    .Select(s => s.ToLower())
