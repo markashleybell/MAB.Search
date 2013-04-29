@@ -21,8 +21,8 @@ namespace MAB.Search.TestApp
 
             var indexFile = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\index.bin";
 
-            if (!File.Exists(indexFile))
-            {
+            //if (!File.Exists(indexFile))
+            //{
                 var segments = new List<Uri> { 
                     new Uri("http://en.wikipedia.org/wiki/Battle_of_Bosworth_Field"),
                     new Uri("http://en.wikipedia.org/wiki/Plymouth"),
@@ -54,7 +54,7 @@ namespace MAB.Search.TestApp
                 crawler.OnUrlRetrieved += OnUrlRetrieved;
 
                 crawler.Begin();
-            }
+            //}
 
             while (true) 
             {
