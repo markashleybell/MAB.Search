@@ -52,6 +52,7 @@ namespace MAB.Search.TestApp
                 segments.ForEach(x => crawler.CrawlQueue.Enqueue(x));
 
                 crawler.OnUrlRetrieved += OnUrlRetrieved;
+                crawler.OnUrlQueued += OnUrlQueued;
 
                 crawler.Begin();
             //}
@@ -81,7 +82,12 @@ namespace MAB.Search.TestApp
 
         private static void OnUrlRetrieved(object sender, UrlRetrievedEventArgs e)
         {
-            Console.WriteLine(e.Url);
+            Console.WriteLine("RETRIEVED [" + e.UrlsSpidered + "]: " + e.Url);
+        }
+
+        private static void OnUrlQueued(object sender, UrlQueuedEventArgs e)
+        {
+            Console.WriteLine("QUEUED [" + e.UrlsQueued + "]: " + e.Url);
         }
     }
 }

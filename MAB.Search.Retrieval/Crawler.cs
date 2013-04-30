@@ -12,13 +12,14 @@ namespace MAB.Search.Retrieval
     public class Crawler : ICrawler
     {
         private List<string> _hosts;
-        private int _limit = 100;
+        private int _limit = 2500;
         private Queue<Uri> _crawlQueue;
         private Uri _baseUri;
         private ISearchIndex _index;
 
         private int _count = 0;
 
+        public event EventHandler<UrlQueuedEventArgs> OnUrlQueued;
         public event EventHandler<UrlRetrievedEventArgs> OnUrlRetrieved;
 
         public Crawler(ISearchIndex index)
@@ -91,7 +92,15 @@ namespace MAB.Search.Retrieval
                             var authority = uri.GetLeftPart(UriPartial.Authority);
                             var fullUrl = (!url.StartsWith(authority)) ? authority + url : url;
 
-                            _crawlQueue.Enqueue(new Uri(fullUrl));
+                            var fullUri = new Uri(fullUrl);
+
+                            if(!_crawlQueue.Contains(fullUri))
+                            {
+                                _crawlQueue.Enqueue(fullUri);
+
+                                if(OnUrlQueued != null)
+                                    OnUrlQueued(this, new UrlQueuedEventArgs(fullUri.ToString(), _crawlQueue.Count));
+                            }
                         }
                     }
 
