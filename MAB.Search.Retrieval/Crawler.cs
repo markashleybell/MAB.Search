@@ -12,7 +12,7 @@ namespace MAB.Search.Retrieval
     public class Crawler : ICrawler
     {
         private List<string> _hosts;
-        private int _limit = 2500;
+        private int _queueLimit = 1000;
         private Queue<Uri> _crawlQueue;
         private Uri _baseUri;
         private ISearchIndex _index;
@@ -56,7 +56,7 @@ namespace MAB.Search.Retrieval
 
         private void ProcessCrawlQueue()
         {
-            if(_count++ >= _limit)
+            if(_count >= _queueLimit)
                 return;
 
             using(var client = new WebClient())
@@ -89,14 +89,16 @@ namespace MAB.Search.Retrieval
 
                         foreach(var url in MatchUrls(content, x => (x.StartsWith("/") && !x.StartsWith("//")) || x.StartsWith(uri.GetLeftPart(UriPartial.Authority))))
                         {
+
                             var authority = uri.GetLeftPart(UriPartial.Authority);
                             var fullUrl = (!url.StartsWith(authority)) ? authority + url : url;
 
                             var fullUri = new Uri(fullUrl);
 
-                            if(!_crawlQueue.Contains(fullUri))
+                            if(!_crawlQueue.Contains(fullUri) && _count < _queueLimit)
                             {
                                 _crawlQueue.Enqueue(fullUri);
+                                _count++;
 
                                 if(OnUrlQueued != null)
                                     OnUrlQueued(this, new UrlQueuedEventArgs(fullUri.ToString(), _crawlQueue.Count));
